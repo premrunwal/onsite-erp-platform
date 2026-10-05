@@ -32,7 +32,7 @@ class _ProjectChatScreenState extends State<ProjectChatScreen> {
   void initState() {
     super.initState();
     // Connect Socket.IO
-    SocketService().connect('http://localhost:4000', 'demo_token');
+    SocketService().connect('https://onsite-erp-platform.onrender.com', 'demo_token');
     SocketService().joinProjectChannel('p1111111-1111-1111-1111-111111111111');
 
     SocketService().onMessageReceived((data) {

@@ -6,7 +6,7 @@ class ApiClient {
   factory ApiClient() => _instance;
 
   late Dio _dio;
-  final String baseUrl = 'http://localhost:4000/apis/v3';
+  final String baseUrl = 'https://onsite-erp-platform.onrender.com/apis/v3';
 
   ApiClient._internal() {
     _dio = Dio(
@@ -33,7 +33,6 @@ class ApiClient {
         },
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
-            // Token expired -> perform refresh or redirect to login
             await LocalStorageService().clearAuthSession();
           }
           return handler.next(e);
