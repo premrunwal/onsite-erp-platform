@@ -20,19 +20,6 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-subprojects {
-    plugins.withId("com.android.library") {
-        (this@subprojects.extensions.getByName("android") as com.android.build.gradle.BaseExtension).apply {
-            compileSdkVersion(34)
-        }
-    }
-    plugins.withId("com.android.application") {
-        (this@subprojects.extensions.getByName("android") as com.android.build.gradle.BaseExtension).apply {
-            compileSdkVersion(34)
-        }
-    }
-}
-
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
