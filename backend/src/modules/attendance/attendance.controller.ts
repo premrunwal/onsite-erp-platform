@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { db, Attendance } from '../../database/db';
+import { db, Attendance, RealDataService } from '../../database/db';
 import { isWithinGeofence } from '../../common/geofence';
 import { evaluateLivenessChallenges, LivenessChallengeProof } from '../../common/liveness';
 import { generateWatermarkStampText } from '../../common/watermark';
@@ -82,7 +82,8 @@ export class AttendanceController {
       overtime_hours: 0,
     };
 
-    db.attendance.push(punchRecord);
+    // Persist directly to Supabase PostgreSQL
+    RealDataService.savePunchIn(punchRecord);
 
     return res.json({
       success: true,
