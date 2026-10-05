@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.onsite_erp_mobile"
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "com.example.onsite_erp_mobile"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
