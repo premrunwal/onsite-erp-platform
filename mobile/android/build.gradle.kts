@@ -22,8 +22,14 @@ subprojects {
 
 subprojects {
     plugins.withId("com.android.library") {
-        val android = project.extensions.getByType(com.android.build.gradle.BaseExtension::class.java)
-        android.compileSdkVersion(34)
+        (this@subprojects.extensions.getByName("android") as com.android.build.gradle.BaseExtension).apply {
+            compileSdkVersion(34)
+        }
+    }
+    plugins.withId("com.android.application") {
+        (this@subprojects.extensions.getByName("android") as com.android.build.gradle.BaseExtension).apply {
+            compileSdkVersion(34)
+        }
     }
 }
 
