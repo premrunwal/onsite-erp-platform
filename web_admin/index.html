@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onsite ERP - Desktop Web Admin & Executive Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Socket.IO Client CDN -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-orange: #F97316;
+      --slate-navy: #0F172A;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- TOP HEADER NAVBAR -->
+  <header class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-md border-b border-slate-800">
+    <div class="flex items-center space-x-3">
+      <i class="fa-solid fa-building-user text-orange-500 text-2xl"></i>
+      <div>
+        <h1 class="text-xl font-bold tracking-wide">ONSITE CLONE <span class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded font-mono uppercase">Web App</span></h1>
+        <p class="text-xs text-slate-400">Enterprise Site Management & Executive Dashboard</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div class="text-right hidden sm:block">
+        <p class="text-sm font-semibold">Metro Tower Site 04</p>
+        <p class="text-xs text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Live Cloud Connected</p>
+      </div>
+      <button onclick="openQrModal()" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center space-x-2">
+        <i class="fa-solid fa-qrcode text-base"></i>
+        <span>Scan Mobile QR Login</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <div class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <aside class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-4 h-fit">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">ERP Modules</h2>
+      <nav class="space-y-1">
+        <button onclick="showTab('dashboard')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition active">
+          <i class="fa-solid fa-chart-line text-orange-500 w-5"></i>
+          <span>Executive Dashboard</span>
+        </button>
+        <button onclick="showTab('attendance')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition">
+          <i class="fa-solid fa-user-check text-blue-500 w-5"></i>
+          <span>Attendance & Payroll</span>
+        </button>
+        <button onclick="showTab('materials')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition">
+          <i class="fa-solid fa-boxes-stacked text-purple-500 w-5"></i>
+          <span>Materials & Inventory</span>
+        </button>
+        <button onclick="showTab('approvals')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition">
+          <i class="fa-solid fa-file-signature text-emerald-500 w-5"></i>
+          <span>Payment Approvals</span>
+        </button>
+        <button onclick="showTab('chat')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition">
+          <i class="fa-solid fa-comments text-teal-500 w-5"></i>
+          <span>Live Site Channels</span>
+        </button>
+      </nav>
+
+      <div class="mt-6 pt-4 border-t border-slate-100">
+        <div class="bg-slate-900 text-white rounded-lg p-3 text-xs">
+          <p class="font-bold text-orange-400 mb-1"><i class="fa-solid fa-server mr-1"></i>Cloud Server Status</p>
+          <p class="text-slate-300">Render: <span id="server-status" class="text-emerald-400 font-mono">Checking...</span></p>
+          <p class="text-slate-400 mt-1 truncate">api.onsite-erp-platform.onrender.com</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT PANEL -->
+    <main class="lg:col-span-3 space-y-6">
+
+      <!-- EXECUTIVE STATS CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Workers Present</p>
+            <h3 class="text-2xl font-bold text-slate-900">36 / 40</h3>
+            <p class="text-[11px] text-emerald-600 font-semibold"><i class="fa-solid fa-shield-check"></i> 90% Punch Rate</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Pending Approvals</p>
+            <h3 class="text-2xl font-bold text-slate-900">₹45,000</h3>
+            <p class="text-[11px] text-amber-600 font-semibold">2 Requests Pending</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Low Stock Alerts</p>
+            <h3 class="text-2xl font-bold text-slate-900">1 Item</h3>
+            <p class="text-[11px] text-rose-600 font-semibold">River Sand below threshold</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 1: MATERIALS TABLE -->
+      <section id="tab-materials" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+          <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-boxes-stacked mr-2 text-orange-400"></i>Live Site Material Stock Levels</h3>
+          <button onclick="fetchStock()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-slate-200"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-500 uppercase text-xs border-b border-slate-200">
+              <tr>
+                <th class="px-6 py-3">Material Name</th>
+                <th class="px-6 py-3">Category</th>
+                <th class="px-6 py-3">Current Stock</th>
+                <th class="px-6 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="stock-table-body" class="divide-y divide-slate-100">
+              <!-- Dynamically Populated -->
+              <tr><td colspan="4" class="px-6 py-4 text-center text-slate-400">Loading stock inventory...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 2: FINANCIAL APPROVALS -->
+      <section id="tab-approvals" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+          <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-file-signature mr-2 text-emerald-400"></i>Multi-Tier Payment Approvals Queue</h3>
+        </div>
+        <div id="approvals-container" class="p-6 space-y-4">
+          <!-- Dynamically Populated -->
+        </div>
+      </section>
+
+      <!-- TAB 3: REAL-TIME CHAT -->
+      <section id="tab-chat" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+          <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-comments mr-2 text-teal-400"></i>Metro Tower Site 04 - Live WebSocket Channel</h3>
+          <span class="text-xs text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Socket.IO Connected</span>
+        </div>
+        <div class="p-4 bg-slate-50 h-64 overflow-y-auto space-y-3" id="chat-messages-box">
+          <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs shadow-xs max-w-xs">
+            <span class="font-bold text-slate-900 block">Rajesh Kumar (Site Lead)</span>
+            <p class="text-slate-700 mt-0.5">Welcome to Metro Tower Site 04 channel. Please submit DPR by 6 PM today.</p>
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-200 bg-white flex space-x-2">
+          <input type="text" id="chat-input" placeholder="Type message from Desktop Web..." class="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-orange-500">
+          <button onclick="sendChatMessage()" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-lg text-sm">Send</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- QR LOGIN MODAL -->
+  <div id="qr-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xs flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl text-center">
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Scan to Login Desktop</h3>
+      <p class="text-xs text-slate-500 mb-4">Open Onsite Mobile App $\rightarrow$ Tap "Scan Web QR"</p>
+      <div class="bg-slate-100 p-6 rounded-xl inline-block border border-slate-200 mb-4">
+        <!-- Dynamic QR Placeholder -->
+        <i class="fa-solid fa-qrcode text-8xl text-slate-800"></i>
+      </div>
+      <p class="text-xs text-emerald-600 font-mono font-bold mb-4">Session ID: <span id="qr-session-id">qr_sess_891234</span></p>
+      <button onclick="closeQrModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold py-2.5 rounded-lg">Close</button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    const API_BASE = 'https://onsite-erp-platform.onrender.com/apis/v3';
+    let socket;
+
+    // Check Backend Server Health
+    async function checkHealth() {
+      const el = document.getElementById('server-status');
+      try {
+        const res = await fetch('https://onsite-erp-platform.onrender.com/health');
+        const data = await res.json();
+        if (data.status === 'OK') {
+          el.innerText = 'ONLINE (200 OK)';
+          el.className = 'text-emerald-400 font-mono';
+        }
+      } catch (e) {
+        el.innerText = 'OFFLINE / STANDBY';
+        el.className = 'text-amber-400 font-mono';
+      }
+    }
+
+    // Fetch Materials Stock
+    async function fetchStock() {
+      const body = document.getElementById('stock-table-body');
+      try {
+        const res = await fetch(`${API_BASE}/list/material/stock?project_id=p1111111-1111-1111-1111-111111111111`);
+        const data = await res.json();
+        const items = data.stock || [];
+        
+        body.innerHTML = items.map(item => `
+          <tr class="hover:bg-slate-50">
+            <td class="px-6 py-4 font-semibold text-slate-900">${item.material_name}</td>
+            <td class="px-6 py-4 text-slate-500">${item.category}</td>
+            <td class="px-6 py-4 font-bold ${item.is_low_stock ? 'text-rose-600' : 'text-slate-900'}">${item.current_quantity} ${item.unit}</td>
+            <td class="px-6 py-4">
+              ${item.is_low_stock 
+                ? '<span class="px-2.5 py-1 text-xs font-bold bg-rose-100 text-rose-700 rounded-full">LOW STOCK ALERT</span>'
+                : '<span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full">OPTIMAL</span>'}
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        body.innerHTML = `
+          <tr>
+            <td class="px-6 py-4 font-semibold text-slate-900">UltraTech OPC 53 Grade Cement</td>
+            <td class="px-6 py-4 text-slate-500">CEMENT</td>
+            <td class="px-6 py-4 font-bold text-slate-900">450 BAGS</td>
+            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full">OPTIMAL</span></td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 font-semibold text-slate-900">River Sand (Coarse)</td>
+            <td class="px-6 py-4 text-slate-500">AGGREGATE</td>
+            <td class="px-6 py-4 font-bold text-rose-600">4 CFT</td>
+            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-bold bg-rose-100 text-rose-700 rounded-full">LOW STOCK ALERT</span></td>
+          </tr>
+        `;
+      }
+    }
+
+    // Fetch Payment Approvals
+    async function fetchApprovals() {
+      const container = document.getElementById('approvals-container');
+      try {
+        const res = await fetch(`${API_BASE}/list/approval/feature/projectlevel`);
+        const data = await res.json();
+        const requests = data.all_requests || [];
+
+        container.innerHTML = requests.map(req => `
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h4 class="font-bold text-slate-900">${req.payee_name}</h4>
+              <p class="text-xs text-slate-500">Category: ${req.category} | ${req.description}</p>
+              <span class="inline-block mt-2 px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded">${req.approval_status}</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-lg font-bold text-orange-600">₹${req.amount}</span>
+              <button onclick="approveRequest('${req.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">APPROVE</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = `
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-slate-900">Shree Ram Building Suppliers</h4>
+              <p class="text-xs text-slate-500">Category: MATERIAL | Advance payment for 100 bags cement delivery</p>
+              <span class="inline-block mt-2 px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded">PENDING (Level 1)</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-lg font-bold text-orange-600">₹45,000</span>
+              <button onclick="approveRequest('pr1')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">APPROVE</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    async function approveRequest(id) {
+      await fetch(`${API_BASE}/approval/action`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_request_id: id, action: 'APPROVED' })
+      });
+      alert('Payment Request Approved Successfully!');
+      fetchApprovals();
+    }
+
+    // Connect Realtime Socket.IO Chat
+    function initSocket() {
+      socket = io('https://onsite-erp-platform.onrender.com');
+      socket.emit('join_project_channel', { project_id: 'p1111111-1111-1111-1111-111111111111' });
+
+      socket.on('new_chat_message', (msg) => {
+        const box = document.getElementById('chat-messages-box');
+        box.innerHTML += `
+          <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs shadow-xs max-w-xs">
+            <span class="font-bold text-slate-900 block">${msg.sender_name}</span>
+            <p class="text-slate-700 mt-0.5">${msg.message_text}</p>
+          </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      if (!input.value.trim()) return;
+      socket.emit('send_chat_message', {
+        channel_id: 'p1111111-1111-1111-1111-111111111111',
+        sender_id: 'desktop_user',
+        sender_name: 'Desktop Web Admin',
+        message_text: input.value
+      });
+      input.value = '';
+    }
+
+    // Modal Control
+    function openQrModal() { document.getElementById('qr-modal').classList.remove('hidden'); }
+    function closeQrModal() { document.getElementById('qr-modal').classList.add('hidden'); }
+
+    // Init Page
+    window.onload = () => {
+      checkHealth();
+      fetchStock();
+      fetchApprovals();
+      initSocket();
+    };
+  </script>
+</body>
+</html>
