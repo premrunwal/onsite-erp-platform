@@ -93,7 +93,7 @@ class _HomeMainTab extends StatelessWidget {
                         const SizedBox(height: 4),
                         const Text(
                           'AI Liveness + Geofence Verified',
-                          style: TextStyle(color: Colors.white87, fontSize: 12),
+                          style: TextStyle(color: Color(0xDEFFFFFF), fontSize: 12),
                         ),
                         const SizedBox(height: 14),
                         ElevatedButton.icon(
