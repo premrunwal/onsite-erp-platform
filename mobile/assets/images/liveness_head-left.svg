@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="300" height="300">
+  <defs>
+    <style>
+      .skin { fill: #FFE0BD; } 
+      .skin-shadow { fill: #E3B899; }
+      .hair { fill: #3E2F2B; }
+      .feature { fill: #333333; }
+      .line { 
+        fill: transparent; 
+        stroke: #333333; 
+        stroke-width: 2.5; 
+        stroke-linecap: round; 
+        stroke-linejoin: round;
+      }
+      .blush { fill: #FF8C69; opacity: 0.35; }
+      .shirt { fill: #4A90E2; }
+    </style>
+  </defs>
+
+  <!-- Breathing Body/Torso -->
+  <g>
+    <animateTransform 
+      attributeName="transform" 
+      type="translate" 
+      values="0,0; 0,1; 0,0" 
+      dur="4s" 
+      repeatCount="indefinite" 
+    />
+    <!-- Shoulders -->
+    <path d="M 15 100 Q 50 65 85 100 Z" class="shirt" />
+    <!-- Neck -->
+    <rect x="38" y="55" width="24" height="30" class="skin-shadow" />
+  </g>
+
+  <!-- Hair Background (Back of head) -->
+  <circle cx="50" cy="45" r="37" class="hair" />
+
+  <!-- Left Ear (Moves slightly left and tucks behind as head turns) -->
+  <g>
+    <animateTransform 
+      attributeName="transform" 
+      type="translate" 
+      values="0,0; -4,0; 0,0" 
+      dur="4s" 
+      repeatCount="indefinite" 
+    />
+    <circle cx="15" cy="48" r="6.5" class="skin-shadow" />
+    <path d="M 13 46 Q 16 48 13 50" class="line" style="stroke-width: 1.5;" />
+  </g>
+
+  <!-- Base Head -->
+  <circle cx="50" cy="45" r="34" class="skin" />
+
+  <!-- Right Ear (Moves significantly left, coming towards the center of the face) -->
+  <g>
+    <animateTransform 
+      attributeName="transform" 
+      type="translate" 
+      values="0,0; -12,0; 0,0" 
+      dur="4s" 
+      repeatCount="indefinite" 
+    />
+    <circle cx="85" cy="48" r="6.5" class="skin" />
+    <path d="M 87 46 Q 84 48 87 50" class="line" style="stroke-width: 1.5;" />
+  </g>
+
+  <!-- Hair Foreground (Bangs - move left slightly less than facial features for depth) -->
+  <g>
+    <animateTransform 
+      attributeName="transform" 
+      type="translate" 
+      values="0,0; -10,0; 0,0" 
+      dur="4s" 
+      repeatCount="indefinite" 
+    />
+    <path d="M 16 42 Q 25 15 50 15 Q 75 15 84 42 Q 75 25 60 22 Q 50 32 40 22 Q 25 25 16 42 Z" class="hair" />
+  </g>
+
+  <!-- Facial Features (Move LEFT significantly to show the turn) -->
+  <g>
+    <animateTransform 
+      attributeName="transform" 
+      type="translate" 
+      values="0,0; -16,0; 0,0" 
+      dur="4s" 
+      repeatCount="indefinite" 
+    />
+    
+    <!-- Eyebrows (Left eyebrow squishes slightly, right stays long) -->
+    <path d="M 28 32 Q 35 28 42 32" class="line" style="stroke-width: 2;">
+       <animate attributeName="d" values="M 28 32 Q 35 28 42 32; M 32 32 Q 37 28 42 32; M 28 32 Q 35 28 42 32" dur="4s" repeatCount="indefinite" />
+    </path>
+    <path d="M 58 32 Q 65 28 72 32" class="line" style="stroke-width: 2;" />
+
+    <!-- Eyes with smooth blinking -->
+    <ellipse cx="35" cy="40" rx="3.5" ry="3.5" class="feature">
+      <animate attributeName="ry" values="3.5; 3.5; 0.5; 3.5; 3.5" keyTimes="0; 0.45; 0.5; 0.55; 1" dur="4s" repeatCount="indefinite" />
+    </ellipse>
+    <ellipse cx="65" cy="40" rx="3.5" ry="3.5" class="feature">
+      <animate attributeName="ry" values="3.5; 3.5; 0.5; 3.5; 3.5" keyTimes="0; 0.45; 0.5; 0.55; 1" dur="4s" repeatCount="indefinite" />
+    </ellipse>
+
+    <!-- Rosy Cheeks -->
+    <circle cx="27" cy="46" r="4.5" class="blush" />
+    <circle cx="73" cy="46" r="4.5" class="blush" />
+
+    <!-- Nose (Curves left slightly to show profile) -->
+    <path d="M 50 43 Q 53 48 48 49" class="line" style="stroke-width: 2;">
+      <animate attributeName="d" values="M 50 43 Q 53 48 48 49; M 50 43 Q 47 48 45 49; M 50 43 Q 53 48 48 49" dur="4s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Smile (Shifts and shortens slightly on the left side) -->
+    <path d="M 37 55 Q 50 64 63 55" class="line" style="stroke-width: 3;">
+       <animate attributeName="d" values="M 37 55 Q 50 64 63 55; M 40 55 Q 50 64 63 55; M 37 55 Q 50 64 63 55" dur="4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>

@@ -20,49 +20,67 @@ const io = new SocketIOServer(server, {
 });
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // Request Logging Middleware
 app.use((req, res, next) => {
-  console.log(`[HTTP API] ${req.method} ${req.url}`);
+  console.log(`[HTTP API Gateway] ${req.method} ${req.url}`);
   next();
 });
 
 // Health Check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', system: 'Onsite ERP Backend API', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'OK',
+    system: 'Onsite Clone Production ERP Gateway',
+    database: 'Supabase PostgreSQL 16 + PostGIS',
+    storage: 'Cloudinary Media Engine',
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Auth & Setup Routes
-app.post('/apis/v3/auth/send-otp', AuthController.sendOtp);
-app.post('/apis/v3/auth/verify-otp', AuthController.verifyOtp);
-app.post('/apis/v3/scan/login/qr', AuthController.qrLoginScan);
-app.get('/apis/v3/country-configuration', AuthController.getCountryConfig);
+// Helper router to bind endpoints to both /apis/v3/ and root /
+const bindRoute = (path: string, handler: express.RequestHandler, method: 'get' | 'post' = 'post') => {
+  if (method === 'get') {
+    app.get(path, handler);
+    app.get(`/apis/v3${path}`, handler);
+  } else {
+    app.post(path, handler);
+    app.post(`/apis/v3${path}`, handler);
+  }
+};
 
-// Attendance & Face AI Routes
-app.post('/apis/v3/add/punch_in', AttendanceController.punchIn);
-app.post('/apis/v3/add/punch_out', AttendanceController.punchOut);
-app.post('/apis/v3/bulk/punch_in_out', AttendanceController.bulkPunch);
-app.post('/apis/v3/add/companyuserfaceinfo', AttendanceController.enrollFaceEmbedding);
-app.get('/apis/v3/list/attendance/payroll', AttendanceController.getPayrollReport);
+// 1. Auth & Onboarding Routes
+bindRoute('/auth/send-otp', AuthController.sendOtp);
+bindRoute('/auth/verify-otp', AuthController.verifyOtp);
+bindRoute('/scan/login/qr', AuthController.qrLoginScan);
+bindRoute('/country-configuration', AuthController.getCountryConfig, 'get');
 
-// Project & DPR Routes
-app.get('/apis/v3/list/all/project', ProjectController.listProjects);
-app.post('/apis/v3/add/daily-progress-report', ProjectController.addDPR);
+// 2. Attendance & AI Facial Biometrics Routes
+bindRoute('/add/punch_in', AttendanceController.punchIn);
+bindRoute('/add/punch_out', AttendanceController.punchOut);
+bindRoute('/bulk/punch_in_out', AttendanceController.bulkPunch);
+bindRoute('/add/companyuserfaceinfo', AttendanceController.enrollFaceEmbedding);
+bindRoute('/list/attendance/payroll', AttendanceController.getPayrollReport, 'get');
+
+// 3. Project & DPR Routes
+bindRoute('/list/all/project', ProjectController.listProjects, 'get');
+bindRoute('/add/daily-progress-report', ProjectController.addDPR);
+app.get('/get/dpr-pdf/:id', ProjectController.getDPRPdf);
 app.get('/apis/v3/get/dpr-pdf/:id', ProjectController.getDPRPdf);
 
-// Materials & Inventory Routes
-app.get('/apis/v3/list/material/stock', MaterialController.listStock);
-app.post('/apis/v3/add/materialpurchase', MaterialController.addPurchase);
-app.post('/apis/v3/bulk/add/material/grn', MaterialController.addGRN);
-app.post('/apis/v3/add/material-transfer/out', MaterialController.transferOut);
-app.post('/apis/v3/add/material-transfer/in', MaterialController.transferIn);
-app.post('/apis/v3/bulk/add/material-used', MaterialController.logConsumption);
+// 4. Materials & Inventory Routes
+bindRoute('/list/material/stock', MaterialController.listStock, 'get');
+bindRoute('/add/materialpurchase', MaterialController.addPurchase);
+bindRoute('/bulk/add/material/grn', MaterialController.addGRN);
+bindRoute('/add/material-transfer/out', MaterialController.transferOut);
+bindRoute('/add/material-transfer/in', MaterialController.transferIn);
+bindRoute('/bulk/add/material-used', MaterialController.logConsumption);
 
-// Financials & Approvals Pipeline Routes
-app.post('/apis/v3/add/payment-request', FinancialController.createPaymentRequest);
-app.post('/apis/v3/approval/action', FinancialController.handleApprovalAction);
-app.get('/apis/v3/list/approval/feature/projectlevel', FinancialController.getApprovalsQueue);
+// 5. Financials & Approvals Pipeline Routes
+bindRoute('/add/payment-request', FinancialController.createPaymentRequest);
+bindRoute('/approval/action', FinancialController.handleApprovalAction);
+bindRoute('/list/approval/feature/projectlevel', FinancialController.getApprovalsQueue, 'get');
 
 // Initialize Realtime Socket.IO Gateway
 setupSocketIO(io);
@@ -71,7 +89,9 @@ setupSocketIO(io);
 if (require.main === module) {
   server.listen(CONFIG.PORT, () => {
     console.log(`=======================================================`);
-    console.log(`  ONSITE CLONE ERP BACKEND API RUNNING ON PORT ${CONFIG.PORT}`);
+    console.log(`  ONSITE CLONE PRODUCTION ERP RUNNING ON PORT ${CONFIG.PORT}`);
+    console.log(`  Database: Supabase PostgreSQL 16 + PostGIS`);
+    console.log(`  Storage: Cloudinary Media Engine`);
     console.log(`  REST API Gateway: http://localhost:${CONFIG.PORT}/apis/v3/`);
     console.log(`  WebSocket Server: ws://localhost:${CONFIG.PORT}`);
     console.log(`=======================================================`);
