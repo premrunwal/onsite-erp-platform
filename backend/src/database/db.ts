@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Pool } from 'pg';
+import { CONFIG } from '../config';
 
 export interface Company {
   id: string;
@@ -113,6 +115,22 @@ export interface ChatMessage {
 const DEFAULT_COMPANY_ID = 'c1111111-1111-1111-1111-111111111111';
 const DEFAULT_PROJECT_ID = 'p1111111-1111-1111-1111-111111111111';
 const DEFAULT_USER_ID = 'u1111111-1111-1111-1111-111111111111';
+
+// Initialize PostgreSQL Connection Pool for Supabase
+let pgPool: Pool | null = null;
+if (CONFIG.DATABASE_URL && !CONFIG.DATABASE_URL.includes('[YOUR-PASSWORD]')) {
+  try {
+    pgPool = new Pool({
+      connectionString: CONFIG.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    });
+    console.log('[Supabase Postgres] Database Connection Pool Initialized');
+  } catch (err) {
+    console.error('[Supabase Postgres] Connection error:', err);
+  }
+}
+
+export { pgPool };
 
 export class InMemoryStore {
   companies: Company[] = [

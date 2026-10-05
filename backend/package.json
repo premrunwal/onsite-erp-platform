@@ -10,10 +10,11 @@
     "test": "node dist/test_api.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "pg": "^8.23.1",
     "socket.io": "^4.7.5",
     "uuid": "^9.0.1"
   },
@@ -22,6 +23,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",
+    "@types/pg": "^8.23.1",
     "@types/uuid": "^9.0.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
