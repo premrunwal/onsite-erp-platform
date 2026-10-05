@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.onsite_erp_mobile"
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
